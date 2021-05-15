@@ -14,4 +14,12 @@ cd YOUR_PROJECT_NAME
 npm install
 ```
 
-You are ready to go!
+# Create / Remove 
+
+sls deploy -v
+sls remove -v
+
+# Check for ServiceEndpoint
+
+# Run scheduled function
+sls invoke -f processAuctions -l

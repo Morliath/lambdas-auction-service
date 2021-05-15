@@ -20,4 +20,5 @@ AuctionsTable:
             KeyType: HASH
           - AttributeName: endsAt
             KeyType: RANGE
-        ProjectionType: ALL
+        Projection:
+          ProjectionType: ALL

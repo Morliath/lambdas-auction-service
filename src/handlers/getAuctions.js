@@ -6,6 +6,7 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 async function getAuctions(event, context) {
     let auctions;
+    const { status } = event.queryStringParameters;
 
     try {
         const result = await dynamodb.scan({

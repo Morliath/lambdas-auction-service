@@ -10,7 +10,7 @@ provider:
   runtime: nodejs12.x
   memorySize: 256
   stage: ${opt:stage, 'dev'}
-  region: eu-west-1
+  region: us-east-1
   environment:
     AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
   iamRoleStatements:
@@ -51,8 +51,8 @@ functions:
 
   processAuctions:
     handler: src/handlers/processAuctions.handler
-    events:
-      - schedule: rate(1 minute)
+    # events:
+    #   - schedule: rate(1 minute)
 
 custom:
   AuctionsTable:
