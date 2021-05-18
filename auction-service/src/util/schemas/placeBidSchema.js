@@ -1,5 +1,5 @@
 const schema = {
-    type: 'strict',
+    type: 'object',
     properties: {
         body: {
             type: 'object',

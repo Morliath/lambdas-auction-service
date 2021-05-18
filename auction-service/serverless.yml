@@ -28,6 +28,7 @@ functions:
           method: POST
           path: /auction
           authorizer: ${self:custom.authorizer}
+          cors: true
 
   getAuctions:
     handler: src/handlers/getAuctions.handler
@@ -36,6 +37,7 @@ functions:
           method: GET
           path: /auctions
           authorizer: ${self:custom.authorizer}
+          cors: true
 
   getAuction:
     handler: src/handlers/getAuction.handler
@@ -44,6 +46,7 @@ functions:
           method: GET
           path: /auction/{id}
           authorizer: ${self:custom.authorizer}
+          cors: true
 
   placeBid:
     handler: src/handlers/placeBid.handler
@@ -52,6 +55,7 @@ functions:
           method: PATCH
           path: auction/{id}/bid
           authorizer: ${self:custom.authorizer}
+          cors: true
 
   processAuctions:
     handler: src/handlers/processAuctions.handler
@@ -59,7 +63,7 @@ functions:
     #   - schedule: rate(1 minute)
 
 custom:
-  authorizer: arn:lambda:#${AWS::Region}:#${AWS::AccountId}:function:auth-service-${self:provider.stage}-auth
+  authorizer: arn:aws:lambda:${self:provider.region}:#{AWS::AccountId}:function:auth-service-${self:provider.stage}-auth
   AuctionsTable:
     name: !Ref AuctionsTable
     arn: !GetAtt AuctionsTable.Arn
