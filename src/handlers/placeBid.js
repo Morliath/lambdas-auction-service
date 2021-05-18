@@ -10,22 +10,30 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 async function placeBid(event, context) {
     const { id } = event.pathParameters;
     const { amount } = event.body;
+    const { email } = event.requestContext.authorizer;
 
     const auction = await getAuctionById(id);
 
-    if (auction.status === 'CLOSED'){
+    if (auction.status === 'CLOSED') {
         throw new createError.Forbidden(`Auction already closed.`);
     }
-    if(amount <= auction.highestBid.amount){
+    if (amount <= auction.highestBid.amount) {
         throw new createError.BadRequest(`Bid must be higher than the last recorded: ${auction.highestBid.amount}`);
+    }
+    if (auction.seller === email) {
+        throw new createError.Forbidden("Cannot bid on your own auction");
+    }
+    if (email === auction.highestBid.bidder) {
+        throw new createError.Forbidden("Already the highest bidder");
     }
 
     const params = {
         TableName: process.env.AUCTIONS_TABLE_NAME,
         Key: { id },
-        UpdateExpression: 'set highestBid.amount = :amount',
+        UpdateExpression: 'set highestBid.amount = :amount, highestBid.bidder = :bidder',
         ExpressionAttributeValues: {
             ':amount': amount,
+            ':bidder': email,
         },
         ReturnValues: 'ALL_NEW',
     }
@@ -33,7 +41,7 @@ async function placeBid(event, context) {
     let updatedAuction;
 
     try {
-        const  result = await dynamodb.update(params).promise();
+        const result = await dynamodb.update(params).promise();
         updatedAuction = result.Attributes;
     } catch (error) {
         console.log(error);
@@ -47,4 +55,4 @@ async function placeBid(event, context) {
 }
 
 export const handler = commonMiddleware(placeBid)
-    .use(validator({inputSchema: placeBidSchema}));
+    .use(validator({ inputSchema: placeBidSchema }));
