@@ -1,18 +1,12 @@
-import { getFinishedAuctions,  closeAuction}  from '../service/auctions'
-import createError from 'http-errors'
+import { getFinishedAuctions } from '../service/repository/DynamoDB/getFinishedAuctions'
+import { closeAuction } from '../service/repository/DynamoDB/closeAuction'
 
 async function processAuctions(event, context) {
-    try {
-        const auctionsToClose = await getFinishedAuctions();
-        const closePromises = auctionsToClose.map( auction => closeAuction(auction));
-        await Promise.all(closePromises);
+    const auctionsToClose = await getFinishedAuctions();
+    const closePromises = auctionsToClose.map(auction => closeAuction(auction));
+    await Promise.all(closePromises);
 
-        return { closed: closePromises.length};
-    } catch (error) {
-        console.log(error);
-        throw new createError.InternalServerError(error);
-    }
-
+    return { closed: closePromises.length };
 }
 
 export const handler = processAuctions;
