@@ -1,4 +1,3 @@
-
 import commonMiddleware from '../util/commonMiddleware'
 import validator from '@middy/validator'
 import createAuctionSchema from '../util/schemas/createAuctionSchema'
