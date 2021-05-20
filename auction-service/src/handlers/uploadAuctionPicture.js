@@ -1,4 +1,6 @@
 import middy from '@middy/core';
+import validator from '@middy/validator'
+import uploadAuctionPictureSchema from '../util/schemas/uploadAuctionPictureSchema'
 import httpErrorHandler from '@middy/http-error-handler';
 import createError from 'http-errors'
 import { getAuctionById } from "../service/repository/DynamoDB/getAuctionById";
@@ -36,4 +38,5 @@ async function uploadAuctionPicture(event) {
 }
 
 export const handler = middy(uploadAuctionPicture)
-    .use(httpErrorHandler());
+    .use(httpErrorHandler())
+    .use(validator({ inputSchema: uploadAuctionPictureSchema }));
